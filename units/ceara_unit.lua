@@ -1,8 +1,9 @@
 require("units.general_unit")
 
-RonieUnit = {}
-RonieUnit.new = function()
-  local self = GeneralUnit.new(2, 2,
+CearaUnit = {}
+CearaUnit.new = function()
+  local self = GeneralUnit.new("Ceará",
+                               2, 2,
                                30,
                                15,
                                4,

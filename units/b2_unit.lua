@@ -2,7 +2,8 @@ require("units.general_unit")
 
 B2Unit = {}
 B2Unit.new = function()
-  local self = GeneralUnit.new(4, 4,
+  local self = GeneralUnit.new("B2",
+                               4, 4,
                                100,
                                10,
                                2,
