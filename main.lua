@@ -18,10 +18,6 @@ function love.mousereleased(x, y, button, istouch)
   hand.mousereleased(x, y, button, istouch)
 end
 
-function love.mousemoved(x, y, dx, dy, istouch)
-  arena.mousemoved(x, y, dx, dy, istouch)
-end
-
 function love.update(dt)
   consensus_bar.update(dt)
 end

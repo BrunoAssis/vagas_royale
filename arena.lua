@@ -17,19 +17,12 @@ Arena.new = function(manager, x, y)
   self.x = x
   self.y = y
 
-  self.mousemoved = function(x, y, dx, dy, istouch)
-    if self.manager.dragging_unit ~= nil and
-      self.x <= x and x <= self.x + (Arena.tile_size * Arena.w) and
-      self.y <= y and y <= self.y + (Arena.tile_size * Arena.h) then
-      self.draw_unit_border(self.manager.dragging_unit)
-    end
-  end
-
   self.draw = function()
-    self.draw_rows()
+    self.draw_arena()
+    self.draw_unit_border()
   end
 
-  self.draw_rows = function()
+  self.draw_arena = function()
     for tile_row, tiles in pairs(Arena.map) do
       self.draw_cols(tile_row, tiles)
     end
@@ -66,26 +59,41 @@ Arena.new = function(manager, x, y)
       Arena.tile_size)
   end
 
-  self.draw_unit_border = function(unit)
-    mouse_x = love.mouse.getX()
-    mouse_y = love.mouse.getY()
-
-    px_per_unit = Arena.tile_size
-    proposed_x = mouse_x - (unit.w * px_per_unit / 2)
-    proposed_y = mouse_y - (unit.h * px_per_unit / 2)
+  self.draw_unit_border = function()
+    local mouse_x = love.mouse.getX()
+    local mouse_y = love.mouse.getY()
     
-    clamped_x = proposed_x - (proposed_x % Arena.tile_size)
-    clamped_y = proposed_y - (proposed_y % Arena.tile_size)
+    if self.manager.dragging_unit ~= nil and
+      self.x <= mouse_x and mouse_x <= self.x + (Arena.tile_size * Arena.w) and
+      self.y <= mouse_y and mouse_y <= self.y + (Arena.tile_size * Arena.h) then
+      self.draw_border(self.manager.dragging_unit, mouse_x, mouse_y)
+    end
+  end
 
-    print(clamped_x, clamped_y)
+  self.draw_border = function(unit, mouse_x, mouse_y)
+    border_w = unit.w * Arena.tile_size
+    border_h = unit.h * Arena.tile_size
 
+    origin_x = mouse_x - (border_w / 2)
+    origin_y = mouse_y - (border_h / 2)
+   
+    clamped_x_left = origin_x - (origin_x % Arena.tile_size)
+    clamped_x_right = (origin_x + Arena.tile_size) - (origin_x % Arena.tile_size)
+    clamped_y_up = origin_y - (origin_y % Arena.tile_size)
+    clamped_y_down = (origin_y + Arena.tile_size) - (origin_y % Arena.tile_size)
+
+    clamped_x = (origin_x - clamped_x_left < clamped_x_right - origin_x) and clamped_x_left or clamped_x_right
+    clamped_y = (origin_y - clamped_y_up < clamped_y_down - origin_y) and clamped_y_up or clamped_y_down
+    
     love.graphics.setColor(255, 0, 0, 255)
-    love.graphics.rectangle(
-      "fill",
-      clamped_x,
-      clamped_y,
-      Arena.tile_size,
-      Arena.tile_size)    
+    love.graphics.setLineWidth(2)
+    love.graphics.line({
+      clamped_x, clamped_y,
+      clamped_x + border_w, clamped_y,
+      clamped_x + border_w, clamped_y + border_h,
+      clamped_x, clamped_y + border_h,
+      clamped_x, clamped_y
+    })
   end
 
   return self
