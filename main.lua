@@ -16,6 +16,7 @@ end
 
 function love.mousereleased(x, y, button, istouch)
   hand.mousereleased(x, y, button, istouch)
+  arena.mousereleased(x, y, button, istouch)
 end
 
 function love.update(dt)
@@ -27,8 +28,4 @@ function love.draw()
   arena.draw()
   consensus_bar.draw()
   hand.draw()
-end
-
-function love.quit()
-  print("Bye")
 end
